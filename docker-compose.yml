@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15
+    container_name: pitch_perfect_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: pitch_perfect
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
