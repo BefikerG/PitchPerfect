@@ -5,7 +5,7 @@ import com.groupXX.pitchperfect.dto.request.RegisterRequest;
 import com.groupXX.pitchperfect.dto.response.TokenResponse;
 import com.groupXX.pitchperfect.model.User;
 import com.groupXX.pitchperfect.repository.UserRepository;
-import com.groupXX.pitchperfect.security.JwtUtils;
+import com.groupXX.pitchperfect.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@SuppressWarnings("null")
+// IDE force refresh
 public class AuthController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
+    private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
 
@@ -37,7 +39,7 @@ public class AuthController {
         userRepository.save(user);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-        String jwtToken = jwtUtils.generateToken(userDetails);
+        String jwtToken = jwtUtil.generateToken(userDetails);
         
         return new ResponseEntity<>(new TokenResponse(jwtToken), HttpStatus.CREATED);
     }
@@ -49,7 +51,7 @@ public class AuthController {
         );
         
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
-        String jwtToken = jwtUtils.generateToken(userDetails);
+        String jwtToken = jwtUtil.generateToken(userDetails);
         
         return ResponseEntity.ok(new TokenResponse(jwtToken));
     }

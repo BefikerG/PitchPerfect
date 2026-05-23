@@ -28,8 +28,13 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private Role role;
+
+    public enum Role {
+        CUSTOMER, ADMIN
+    }
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
