@@ -32,6 +32,8 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<TokenResponse> register(@RequestBody RegisterRequest request) {
         User user = User.builder()
+                .firstName(request.firstName())
+                .lastName(request.lastName())
                 .email(request.email())
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .role(User.Role.CUSTOMER) // Default role
