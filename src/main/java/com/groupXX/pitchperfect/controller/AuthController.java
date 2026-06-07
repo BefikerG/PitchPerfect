@@ -31,13 +31,22 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponse> register(@RequestBody RegisterRequest request) {
-        User user = User.builder()
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .email(request.email())
-                .passwordHash(passwordEncoder.encode(request.password()))
-                .role(User.Role.CUSTOMER) // Default role
-                .build();
+        java.util.Optional<User> existingUserOpt = userRepository.findByEmail(request.email());
+        User user;
+        if (existingUserOpt.isPresent()) {
+            user = existingUserOpt.get();
+            user.setFirstName(request.firstName());
+            user.setLastName(request.lastName());
+            user.setPasswordHash(passwordEncoder.encode(request.password()));
+        } else {
+            user = User.builder()
+                    .firstName(request.firstName())
+                    .lastName(request.lastName())
+                    .email(request.email())
+                    .passwordHash(passwordEncoder.encode(request.password()))
+                    .role(User.Role.CUSTOMER) // Default role
+                    .build();
+        }
         userRepository.save(user);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
