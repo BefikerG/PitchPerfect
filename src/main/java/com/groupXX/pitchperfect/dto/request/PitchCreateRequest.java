@@ -1,6 +1,7 @@
 package com.groupXX.pitchperfect.dto.request;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,5 +12,11 @@ public record PitchCreateRequest(
 
         @NotBlank(message = "Location is required") String location,
 
-        @NotNull(message = "Price per hour is required") @Positive(message = "Price must be greater than zero") BigDecimal pricePerHour) {
+        @NotNull(message = "Price per hour is required") @Positive(message = "Price must be greater than zero") BigDecimal pricePerHour,
+        
+        String imageUrl,
+        
+        List<String> imageUrls,
+        
+        Long managerId) {
 }

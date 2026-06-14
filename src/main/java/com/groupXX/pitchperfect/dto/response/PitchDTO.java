@@ -2,6 +2,7 @@ package com.groupXX.pitchperfect.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record PitchDTO(
         Long id,
@@ -9,5 +10,11 @@ public record PitchDTO(
         String location,
         BigDecimal pricePerHour,
         boolean isAvailable,
-        LocalDateTime createdAt) {
+        String imageUrl,
+        List<String> imageUrls,
+        LocalDateTime createdAt,
+        LocalDateTime currentBookingEndTime,
+        LocalDateTime nextBookingStartTime,
+        Long managerId,
+        String createdByName) {
 }

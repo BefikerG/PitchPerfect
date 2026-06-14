@@ -1,0 +1,3 @@
+ALTER TABLE pitches 
+ADD COLUMN image_url VARCHAR(255),
+ADD COLUMN manager_id BIGINT REFERENCES users(id);

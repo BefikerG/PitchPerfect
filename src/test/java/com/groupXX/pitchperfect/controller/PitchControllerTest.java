@@ -17,7 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PitchController.class)
 @AutoConfigureMockMvc(addFilters = false) // Bypasses the actual JWT filter for pure controller testing
-@SuppressWarnings("null")
 class PitchControllerTest {
 
     @Autowired private MockMvc mockMvc;
@@ -37,6 +36,7 @@ class PitchControllerTest {
                 """;
 
         mockMvc.perform(post("/api/v1/pitches")
+                .principal(() -> "manager@test.com")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest))
                 .andExpect(status().isCreated());
@@ -55,6 +55,7 @@ class PitchControllerTest {
                 """;
 
         mockMvc.perform(post("/api/v1/pitches")
+                .principal(() -> "manager@test.com")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(invalidJson))
                 .andExpect(status().isBadRequest());

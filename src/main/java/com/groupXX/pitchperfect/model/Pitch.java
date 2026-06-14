@@ -30,6 +30,21 @@ public class Pitch {
     @Column(name = "is_available")
     private boolean isAvailable = true;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    // Multiple images stored as comma-separated URLs
+    @Column(name = "image_urls", columnDefinition = "TEXT")
+    private String imageUrls;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manager_id")
+    private User manager;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_id")
+    private User createdBy;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
