@@ -22,6 +22,12 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "username", unique = true)
+    private String username;
+
+    @Column(name = "profile_image_url", columnDefinition = "TEXT")
+    private String profileImageUrl;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -33,11 +39,15 @@ public class User {
     private Role role;
 
     public enum Role {
-        CUSTOMER, ADMIN
+        CUSTOMER, MANAGER, ADMIN
     }
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean banned = false;
 
     @PrePersist
     protected void onCreate() {

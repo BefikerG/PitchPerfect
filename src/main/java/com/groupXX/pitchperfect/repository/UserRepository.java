@@ -10,5 +10,6 @@ import com.groupXX.pitchperfect.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email); // We will need this for Security later
+    boolean existsByUsername(String username);
 }
 

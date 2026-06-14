@@ -16,10 +16,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@SuppressWarnings("null")
+@CrossOrigin(origins = "http://localhost:5173")
 // IDE force refresh
 public class AuthController {
 
@@ -37,12 +40,14 @@ public class AuthController {
             user = existingUserOpt.get();
             user.setFirstName(request.firstName());
             user.setLastName(request.lastName());
+            user.setUsername(request.username());
             user.setPasswordHash(passwordEncoder.encode(request.password()));
         } else {
             user = User.builder()
                     .firstName(request.firstName())
                     .lastName(request.lastName())
                     .email(request.email())
+                    .username(request.username())
                     .passwordHash(passwordEncoder.encode(request.password()))
                     .role(User.Role.CUSTOMER) // Default role
                     .build();
@@ -51,19 +56,43 @@ public class AuthController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String jwtToken = jwtUtil.generateToken(userDetails);
-        
+
         return new ResponseEntity<>(new TokenResponse(jwtToken), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/check-username")
+    public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam String username) {
+        boolean exists = userRepository.existsByUsername(username);
+        return ResponseEntity.ok(Map.of("available", !exists));
     }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
-        );
-        
+                new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.email());
         String jwtToken = jwtUtil.generateToken(userDetails);
-        
+
         return ResponseEntity.ok(new TokenResponse(jwtToken));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getCurrentUser(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new com.groupXX.pitchperfect.exception.ResourceNotFoundException("User not found"));
+        
+        return ResponseEntity.ok(Map.of(
+                "id", user.getId(),
+                "firstName", user.getFirstName(),
+                "lastName", user.getLastName(),
+                "email", user.getEmail(),
+                "username", user.getUsername() != null ? user.getUsername() : "",
+                "profileImageUrl", user.getProfileImageUrl() != null ? user.getProfileImageUrl() : "",
+                "role", user.getRole().name()
+        ));
     }
 }
