@@ -37,9 +37,24 @@ public class Booking {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "cancellation_reason", length = 500)
+    private String cancellationReason;
+
+    @Column(name = "cancellation_response", length = 500)
+    private String cancellationResponse;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "cancellation_refund_status", nullable = false)
+    @Builder.Default
+    private RefundStatus cancellationRefundStatus = RefundStatus.NONE;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+
+    public enum RefundStatus {
+        NONE, PENDING_APPROVAL, APPROVED, REJECTED
     }
 
     public enum Status {
