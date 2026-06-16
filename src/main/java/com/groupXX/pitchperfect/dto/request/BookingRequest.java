@@ -2,7 +2,6 @@ package com.groupXX.pitchperfect.dto.request;
 
 import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
 public record BookingRequest(
