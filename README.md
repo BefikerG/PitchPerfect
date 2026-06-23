@@ -1,4 +1,4 @@
-# Pitch Perfect — Sports Venue & Turf Booking Platform
+# Pitch Perfect   Sports Venue & Turf Booking Platform
 
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.5-6DB33F?style=flat-square&logo=springboot&logoColor=white)
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
@@ -6,15 +6,15 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite&logoColor=white)
 
-> **Course**: SECT-4221 Enterprise Application Development — Group Capstone Project (Spring 2025/2026)
-> **Institution**: Addis Ababa University of Technology — Department of Software Engineering
+> **Course**: SECT-4221 Enterprise Application Development   Group Capstone Project (Spring 2025/2026)
+> **Institution**: Addis Ababa University of Technology   Department of Software Engineering
 > **Group Project ID**: GP-2026-XXXX 
 
 ---
 
 ## Project Overview
 
-**Pitch Perfect** is a production-quality, full-stack enterprise web application that digitizes the complete lifecycle of booking and managing local sports turfs and futsal pitches in Addis Ababa. Local teams and individuals frequently struggle to secure available venues due to fragmented, manual systems that rely on phone calls or physical site visits. Venue managers on the other side face compounding operational issues — double bookings, unrecorded cancellations, and inefficient peak-hour slot management.
+**Pitch Perfect** is a production-quality, full-stack enterprise web application that digitizes the complete lifecycle of booking and managing local sports turfs and futsal pitches in Addis Ababa. Local teams and individuals frequently struggle to secure available venues due to fragmented, manual systems that rely on phone calls or physical site visits. Venue managers on the other side face compounding operational issues  double bookings, unrecorded cancellations, and inefficient peak-hour slot management.
 
 This platform resolves both sides of the problem by providing real-time availability tracking, automated pricing calculation, a conflict-free booking engine enforced at the database level, a structured cancellation and refund workflow, and a secure role-based access infrastructure that spans three distinct user roles.
 
@@ -66,15 +66,15 @@ enterprise-final-assignment/
 
 In strict compliance with the SE4801 project guidelines, the system implements five core enterprise pillars:
 
-1. **Backend API** — Spring Boot 3.2.5 on Java 21. Clean REST semantics across six controller classes (`AuthController`, `PitchController`, `BookingController`, `ReviewController`, `UserController`, `AdminController`), structured JSON global error responses via `GlobalExceptionHandler`, and offset-based pagination on all list resources.
+1. **Backend API**   Spring Boot 3.2.5 on Java 21. Clean REST semantics across six controller classes (`AuthController`, `PitchController`, `BookingController`, `ReviewController`, `UserController`, `AdminController`), structured JSON global error responses via `GlobalExceptionHandler`, and offset-based pagination on all list resources.
 
-2. **Data Layer** — Normalized PostgreSQL 15 schema. All schema state transitions are managed exclusively through 15 versioned Flyway evolutionary migration scripts (`V1__init_schema` through `V15__add_cancellation_refund_fields`). Hibernate is set to `validate` mode — it never mutates the schema.
+2. **Data Layer**   Normalized PostgreSQL 15 schema. All schema state transitions are managed exclusively through 15 versioned Flyway evolutionary migration scripts (`V1__init_schema` through `V15__add_cancellation_refund_fields`). Hibernate is set to `validate` mode   it never mutates the schema.
 
-3. **Security Pipeline** — Spring Security 6 with a stateless JWT filter chain (`JwtAuthFilter`, `JwtUtil`, `CustomUserDetailsService`). BCrypt password encoding and method-level RBAC via `@PreAuthorize`. Zero secrets in source — all credentials and keys are injected through environment variables.
+3. **Security Pipeline**   Spring Security 6 with a stateless JWT filter chain (`JwtAuthFilter`, `JwtUtil`, `CustomUserDetailsService`). BCrypt password encoding and method-level RBAC via `@PreAuthorize`. Zero secrets in source   all credentials and keys are injected through environment variables.
 
-4. **Quality Assurance** — JUnit 5 test suites covering `BookingService`, `PitchService`, and `PitchController`. Mockito is used for service-layer isolation. JaCoCo is configured as a Maven plugin to enforce the mandatory 70% line coverage threshold. Reports are produced at `target/site/jacoco/index.html` on every `mvn test` run.
+4. **Quality Assurance**   JUnit 5 test suites covering `BookingService`, `PitchService`, and `PitchController`. Mockito is used for service-layer isolation. JaCoCo is configured as a Maven plugin to enforce the mandatory 70% line coverage threshold. Reports are produced at `target/site/jacoco/index.html` on every `mvn test` run.
 
-5. **Deployment Infrastructure** — A `docker-compose.yml` orchestrates three containers: `pitch_perfect_db` (PostgreSQL 15), `pitch_perfect_api` (Spring Boot on port 8081), and `pitch_perfect_ui` (React served by Nginx on port 3000). The entire full stack — database, backend, and frontend — can be launched with a single command. The React frontend is packaged into a lightweight Nginx container using a multi-stage Docker build; no Node.js installation is required to run the UI.
+5. **Deployment Infrastructure**   A `docker-compose.yml` orchestrates three containers: `pitch_perfect_db` (PostgreSQL 15), `pitch_perfect_api` (Spring Boot on port 8081), and `pitch_perfect_ui` (React served by Nginx on port 3000). The entire full stack   database, backend, and frontend   can be launched with a single command. The React frontend is packaged into a lightweight Nginx container using a multi-stage Docker build; no Node.js installation is required to run the UI.
 
 ---
 
@@ -84,10 +84,10 @@ The application enforces a strict four-layer decoupled architecture: **Controlle
 
 ### Architecture Rules
 
-- **Separation of Concerns** — Controllers are pure HTTP presentation layers. They never call repositories directly.
-- **DTO Encapsulation** — All inbound request payloads and outbound API responses use immutable Java record DTOs located in `dto/request/` and `dto/response/`. Domain `@Entity` objects never cross service boundaries.
-- **Zero Hardcoded Secrets** — No plain-text passwords, JWT keys, or database credentials exist in any source file. All runtime secrets are injected via environment variables resolved in `application.properties`.
-- **Conflict-Free Scheduling** — Booking conflicts are prevented at multiple layers: service-level overlap detection, a database-level unique index on the booking time range (`V10__add_booking_unique_index.sql`), and `@Future` Bean Validation constraints on incoming request timestamps.
+- **Separation of Concerns**   Controllers are pure HTTP presentation layers. They never call repositories directly.
+- **DTO Encapsulation**   All inbound request payloads and outbound API responses use immutable Java record DTOs located in `dto/request/` and `dto/response/`. Domain `@Entity` objects never cross service boundaries.
+- **Zero Hardcoded Secrets**   No plain-text passwords, JWT keys, or database credentials exist in any source file. All runtime secrets are injected via environment variables resolved in `application.properties`.
+- **Conflict-Free Scheduling**   Booking conflicts are prevented at multiple layers: service-level overlap detection, a database-level unique index on the booking time range (`V10__add_booking_unique_index.sql`), and `@Future` Bean Validation constraints on incoming request timestamps.
 
 ### Core Domain Entities
 
@@ -101,7 +101,7 @@ The application enforces a strict four-layer decoupled architecture: **Controlle
 
 ---
 
-## Frontend — pitch-perfect-ui
+## Frontend   pitch-perfect-ui
 
 The React 19 frontend is a single-page application built with Vite 8 and styled with Tailwind CSS 3. It communicates exclusively with the Spring Boot backend via Axios.
 
@@ -120,13 +120,13 @@ The React 19 frontend is a single-page application built with Vite 8 and styled 
 
 | Route | Component | Access |
 |:------|:----------|:-------|
-| `/` | `Home` | Public — pitch discovery and search |
-| `/auth` | `Auth` | Public — login and registration |
-| `/dashboard` | `Dashboard` | CUSTOMER — browse and book pitches |
-| `/my-bookings` | `MyBookings` | CUSTOMER — booking history, cancellations, refund policy |
-| `/manager` | `ManagerDashboard` | MANAGER — pitch management, booking approval workflow |
-| `/admin` | `AdminDashboard` | ADMIN — global platform controls, user management |
-| `/profile` | `Profile` | Authenticated — account settings |
+| `/` | `Home` | Public   pitch discovery and search |
+| `/auth` | `Auth` | Public   login and registration |
+| `/dashboard` | `Dashboard` | CUSTOMER   browse and book pitches |
+| `/my-bookings` | `MyBookings` | CUSTOMER   booking history, cancellations, refund policy |
+| `/manager` | `ManagerDashboard` | MANAGER   pitch management, booking approval workflow |
+| `/admin` | `AdminDashboard` | ADMIN   global platform controls, user management |
+| `/profile` | `Profile` | Authenticated   account settings |
 
 ### Running the Frontend
 
@@ -160,21 +160,21 @@ The request pipeline passes through `JwtAuthFilter`, which decodes and validates
 
 ### OWASP API Security Mitigations
 
-- **Broken Object Level Authorization (BOLA)** — Every service method validates the authenticated principal's identity against the resource owner before returning data or mutating state. A customer cannot access another customer's bookings; a manager cannot modify pitches they do not own.
-- **Input Validation** — All controller request bodies are annotated with `@Valid`. Fields are guarded by `@NotBlank`, `@Size`, `@Email`, and temporal constraints (`@Future` on booking start times) via Spring's Bean Validation framework.
+- **Broken Object Level Authorization (BOLA)**   Every service method validates the authenticated principal's identity against the resource owner before returning data or mutating state. A customer cannot access another customer's bookings; a manager cannot modify pitches they do not own.
+- **Input Validation**   All controller request bodies are annotated with `@Valid`. Fields are guarded by `@NotBlank`, `@Size`, `@Email`, and temporal constraints (`@Future` on booking start times) via Spring's Bean Validation framework.
 
 ---
 
-## 🐳 Docker — Full Stack Setup (Recommended)
+## 🐳 Docker   Full Stack Setup (Recommended)
 
-The easiest way to run the entire application. No need to install Java, Node.js, or Vite — Docker handles everything.
+The easiest way to run the entire application. No need to install Java, Node.js, or Vite   Docker handles everything.
 
 ### Prerequisites
 
 - [Docker Engine](https://docs.docker.com/get-docker/) with Docker Compose
 - [Apache Maven 3.9+](https://maven.apache.org/) (only needed to build the JAR once)
 
-### Step 1 — Build the Backend JAR
+### Step 1   Build the Backend JAR
 
 ```bash
 cd PitchPerfect
@@ -183,7 +183,7 @@ mvn clean package -DskipTests
 
 This compiles the Spring Boot application and produces `target/PitchPerfect-*.jar`.
 
-### Step 2 — Start All Services
+### Step 2   Start All Services
 
 ```bash
 docker compose up --build
@@ -191,7 +191,7 @@ docker compose up --build
 
 Docker will automatically:
 1. Start **PostgreSQL 15** (`pitch_perfect_db`) on port `5432`
-2. Start the **Spring Boot API** (`pitch_perfect_api`) on port `8081` — Flyway migrations run on startup
+2. Start the **Spring Boot API** (`pitch_perfect_api`) on port `8081`   Flyway migrations run on startup
 3. Build and start the **React frontend** (`pitch_perfect_ui`) using a multi-stage Nginx image on port `3000`
 
 ### Access Points
@@ -238,7 +238,7 @@ docker compose up --build frontend
 Create a `.env` file at the root of the `PitchPerfect/` directory. The `application.properties` file reads these values at startup:
 
 ```env
-# Required — override in production
+# Required   override in production
 DB_URL=jdbc:postgresql://localhost:5432/pitch_perfect
 DB_USER=root
 DB_PASS=rootpassword
@@ -289,9 +289,9 @@ mvn clean test
 
 **Test classes included:**
 
-- `BookingServiceTest` — Unit tests for the conflict detection, cancellation, and refund calculation logic in `BookingService`.
-- `PitchServiceTest` — Unit tests for pitch creation, availability toggling, and ownership validation in `PitchService`.
-- `PitchControllerTest` — Controller slice tests verifying HTTP response codes and security constraints on pitch endpoints.
+- `BookingServiceTest`   Unit tests for the conflict detection, cancellation, and refund calculation logic in `BookingService`.
+- `PitchServiceTest`   Unit tests for pitch creation, availability toggling, and ownership validation in `PitchService`.
+- `PitchControllerTest`   Controller slice tests verifying HTTP response codes and security constraints on pitch endpoints.
 
 ### JaCoCo Coverage Report
 
@@ -321,7 +321,7 @@ All schema changes are tracked as versioned Flyway scripts. No manual DDL is eve
 
 | Version | Description |
 |:--------|:------------|
-| V1 | Initial schema — `users`, `pitches`, `bookings` tables |
+| V1 | Initial schema   `users`, `pitches`, `bookings` tables |
 | V2 | `reviews` and `payments` tables |
 | V3 | Seed admin account |
 | V4 | `cancellation_reason` column on bookings |
@@ -342,4 +342,4 @@ All schema changes are tracked as versioned Flyway scripts. No manual DDL is eve
 
 ## AI Tool Disclosure
 
-In alignment with the academic integrity frameworks defined in Sections A12 and C6 of the project guidelines, the development team declares that generative AI tools were used during development. Their use was limited to boilerplate code generation (configuring Lombok field annotations, initial repository skeleton scaffolding),helped with debugging some persistant bugs  and standard Markdown layout assistance. All core domain logic — including the conflict-free scheduling engine, the cancellation and refund workflow, the JWT security filter chain, and the role-based authorization rules — was written, reviewed, and tested by the assigned group members.
+In alignment with the academic integrity frameworks defined in Sections A12 and C6 of the project guidelines, the development team declares that generative AI tools were used during development. Their use was limited to boilerplate code generation (configuring Lombok field annotations, initial repository skeleton scaffolding),helped with debugging some persistant bugs  and standard Markdown layout assistance. All core domain logic   including the conflict-free scheduling engine, the cancellation and refund workflow, the JWT security filter chain, and the role-based authorization rules   was written, reviewed, and tested by the assigned group members.
