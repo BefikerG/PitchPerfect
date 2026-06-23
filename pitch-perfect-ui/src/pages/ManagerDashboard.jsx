@@ -439,6 +439,7 @@ const ManagerDashboard = () => {
       setPricePerHour('');
       setImages([{ type: 'url', value: '', preview: '' }]);
       setSelectedManagerId('');
+      fetchManagedPitches();
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create pitch. Please try again.');
     } finally {

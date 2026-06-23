@@ -1,0 +1,1 @@
+ALTER TABLE pitches ALTER COLUMN image_url TYPE TEXT;

@@ -44,10 +44,10 @@ public class PitchService {
             }
         }
 
-        // Join imageUrls list into comma-separated string for storage
+        // Join imageUrls list into |||-separated string for storage
         String imageUrlsStr = null;
         if (request.imageUrls() != null && !request.imageUrls().isEmpty()) {
-            imageUrlsStr = String.join(",", request.imageUrls().stream()
+            imageUrlsStr = String.join("|||", request.imageUrls().stream()
                     .filter(url -> url != null && !url.isBlank())
                     .toList());
         }
@@ -85,13 +85,22 @@ public class PitchService {
     }
 
     private PitchDTO mapToDTO(Pitch pitch) {
-        // Parse comma-separated imageUrls back into a List
+        // Parse imageUrls back into a List (handle both old comma-separated and new |||-separated)
         List<String> imageUrlList = Collections.emptyList();
         if (pitch.getImageUrls() != null && !pitch.getImageUrls().isBlank()) {
-            imageUrlList = Arrays.stream(pitch.getImageUrls().split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isBlank())
-                    .toList();
+            if (pitch.getImageUrls().contains("|||")) {
+                imageUrlList = Arrays.stream(pitch.getImageUrls().split("\\|\\|\\|"))
+                        .map(String::trim)
+                        .filter(s -> !s.isBlank())
+                        .toList();
+            } else if (pitch.getImageUrls().startsWith("data:image")) {
+                imageUrlList = List.of(pitch.getImageUrls().trim());
+            } else {
+                imageUrlList = Arrays.stream(pitch.getImageUrls().split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isBlank())
+                        .toList();
+            }
         } else if (pitch.getImageUrl() != null && !pitch.getImageUrl().isBlank()) {
             imageUrlList = List.of(pitch.getImageUrl());
         }
@@ -172,7 +181,7 @@ public class PitchService {
         
         // Handle images
         if (request.imageUrls() != null && !request.imageUrls().isEmpty()) {
-            pitch.setImageUrls(String.join(",", request.imageUrls()));
+            pitch.setImageUrls(String.join("|||", request.imageUrls()));
             pitch.setImageUrl(request.imageUrls().get(0));
         } else if (request.imageUrl() != null) {
             pitch.setImageUrl(request.imageUrl());
