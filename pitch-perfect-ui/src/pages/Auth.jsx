@@ -1,3 +1,4 @@
+import API_BASE from '../config';
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -27,7 +28,7 @@ const Auth = () => {
     setUsernameStatus('checking');
     const timer = setTimeout(async () => {
       try {
-        const res = await axios.get(`http://localhost:8081/api/v1/auth/check-username?username=${username}`);
+        const res = await axios.get(`${API_BASE}/api/v1/auth/check-username?username=${username}`);
         setUsernameStatus(res.data.available ? 'available' : 'taken');
       } catch (err) {
         setUsernameStatus(null);
@@ -42,11 +43,11 @@ const Auth = () => {
     setError('');
     try {
       if (isLogin) {
-        const res = await axios.post('http://localhost:8081/api/v1/auth/login', { email, password });
+        const res = await axios.post(`${API_BASE}/api/v1/auth/login', { email, password });
         login(res.data.token, rememberMe);
         navigate('/dashboard');
       } else {
-        const res = await axios.post('http://localhost:8081/api/v1/auth/register', { 
+        const res = await axios.post(`${API_BASE}/api/v1/auth/register', { 
           firstName, lastName, username, email, password 
         });
         login(res.data.token, rememberMe);

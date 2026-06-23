@@ -1,3 +1,4 @@
+import API_BASE from '../config';
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -59,7 +60,7 @@ const Dashboard = () => {
   const fetchPitches = async (optStart, optEnd) => {
     setLoading(true);
     try {
-      let url = 'http://localhost:8081/api/v1/pitches/search?size=50';
+      let url = `${API_BASE}/api/v1/pitches/search?size=50';
       const s = optStart !== undefined ? optStart : searchStartTime;
       const e = optEnd !== undefined ? optEnd : searchEndTime;
       if (s && e) {
@@ -78,7 +79,7 @@ const Dashboard = () => {
 
   const fetchReviews = async (pitchId) => {
     try {
-      const res = await axios.get(`http://localhost:8081/api/v1/reviews/pitch/${pitchId}?size=50`);
+      const res = await axios.get(`${API_BASE}/api/v1/reviews/pitch/${pitchId}?size=50`);
       setReviews(res.data.content || []);
     } catch (err) {
       console.error('Failed to load reviews', err);
@@ -128,7 +129,7 @@ const Dashboard = () => {
     const fmt = (dt) => dt.length === 16 ? dt + ':00' : dt;
 
     try {
-      await axios.post('http://localhost:8081/api/v1/bookings', {
+      await axios.post(`${API_BASE}/api/v1/bookings', {
         pitchId: selectedPitch.id,
         startTime: fmt(startTime),
         endTime: fmt(endTime),
@@ -224,7 +225,7 @@ const Dashboard = () => {
     e.preventDefault();
     if (!token) return;
     try {
-      await axios.post('http://localhost:8081/api/v1/reviews', {
+      await axios.post(`${API_BASE}/api/v1/reviews', {
         pitchId: selectedPitch.id,
         rating: reviewRating,
         comment: reviewComment

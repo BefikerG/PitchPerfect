@@ -1,3 +1,4 @@
+import API_BASE from '../config';
 import { useState, useContext, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -109,11 +110,11 @@ const AdminDashboard = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const [statsRes, usersRes, pitchesRes, managersRes, bookingsRes] = await Promise.all([
-        axios.get('http://localhost:8081/api/v1/admin/stats', config),
-        axios.get('http://localhost:8081/api/v1/admin/users?size=100', config),
-        axios.get('http://localhost:8081/api/v1/pitches?size=100', config),
-        axios.get('http://localhost:8081/api/v1/admin/managers', config).catch(() => ({ data: [] })),
-        axios.get('http://localhost:8081/api/v1/bookings?size=100', config).catch(() => ({ data: { content: [] } }))
+        axios.get(`${API_BASE}/api/v1/admin/stats', config),
+        axios.get(`${API_BASE}/api/v1/admin/users?size=100', config),
+        axios.get(`${API_BASE}/api/v1/pitches?size=100', config),
+        axios.get(`${API_BASE}/api/v1/admin/managers', config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE}/api/v1/bookings?size=100', config).catch(() => ({ data: { content: [] } }))
       ]);
       setStats(statsRes.data);
       setUsers(usersRes.data.content || []);
@@ -141,7 +142,7 @@ const AdminDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.put(`http://localhost:8081/api/v1/admin/users/${u.id}/ban`, {}, {
+          await axios.put(`${API_BASE}/api/v1/admin/users/${u.id}/ban`, {}, {
             headers: { Authorization: `Bearer ${token}` }
           });
           showToast(`${u.firstName} has been ${u.banned ? 'unbanned' : 'banned'}.`, u.banned ? 'success' : 'danger');
@@ -166,7 +167,7 @@ const AdminDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.put(`http://localhost:8081/api/v1/admin/users/${u.id}/role`, { role: newRole }, {
+          await axios.put(`${API_BASE}/api/v1/admin/users/${u.id}/role`, { role: newRole }, {
             headers: { Authorization: `Bearer ${token}` }
           });
           showToast(`${u.firstName}'s role updated to ${newRole}.`, 'success');
@@ -192,7 +193,7 @@ const AdminDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.put(`http://localhost:8081/api/v1/pitches/${pitch.id}/availability`, {}, {
+          await axios.put(`${API_BASE}/api/v1/pitches/${pitch.id}/availability`, {}, {
             headers: { Authorization: `Bearer ${token}` }
           });
           showToast(`"${pitch.name}" has been ${pitch.isAvailable ? 'unlisted' : 're-listed'}.`, 'success');
@@ -210,7 +211,7 @@ const AdminDashboard = () => {
   const saveEditPitch = async (updatedData) => {
     setIsEditLoading(true);
     try {
-      await axios.put(`http://localhost:8081/api/v1/pitches/${editingPitch.id}`, updatedData, {
+      await axios.put(`${API_BASE}/api/v1/pitches/${editingPitch.id}`, updatedData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('Pitch updated successfully.', 'success');
@@ -232,7 +233,7 @@ const AdminDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.delete(`http://localhost:8081/api/v1/pitches/${pitch.id}`, {
+          await axios.delete(`${API_BASE}/api/v1/pitches/${pitch.id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           showToast(`"${pitch.name}" has been deleted.`, 'success');
@@ -259,7 +260,7 @@ const AdminDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.put(`http://localhost:8081/api/v1/admin/pitches/${pitch.id}/manager`,
+          await axios.put(`${API_BASE}/api/v1/admin/pitches/${pitch.id}/manager`,
             { managerId: managerId || null },
             { headers: { Authorization: `Bearer ${token}` } }
           );
@@ -277,7 +278,7 @@ const AdminDashboard = () => {
 
   const handleViewProfile = async (u) => {
     try {
-      const res = await axios.get(`http://localhost:8081/api/v1/admin/users/${u.id}/stats`, {
+      const res = await axios.get(`${API_BASE}/api/v1/admin/users/${u.id}/stats`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setProfileStats(res.data);
@@ -335,7 +336,7 @@ const AdminDashboard = () => {
                     style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px', textAlign: 'center', cursor: 'pointer', transition: 'background 0.2s' }}
                     onClick={async () => {
                       try {
-                        const res = await axios.get(`http://localhost:8081/api/v1/bookings/user/${profileModalUser.id}?size=50`, { headers: { Authorization: `Bearer ${token}` } });
+                        const res = await axios.get(`${API_BASE}/api/v1/bookings/user/${profileModalUser.id}?size=50`, { headers: { Authorization: `Bearer ${token}` } });
                         setDrillDownBookings(res.data.content);
                       } catch (err) { showToast('Failed to load bookings.', 'danger'); }
                     }}
@@ -501,7 +502,7 @@ const AdminDashboard = () => {
                         <td style={{ padding: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                           {u.profileImageUrl ? (
                             <img 
-                              src={u.profileImageUrl.startsWith('/uploads/') ? `http://localhost:8081${u.profileImageUrl}` : u.profileImageUrl} 
+                              src={u.profileImageUrl.startsWith('/uploads/') ? `'${API_BASE}'${u.profileImageUrl}` : u.profileImageUrl} 
                               alt="" 
                               style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.2)' }} 
                             />
@@ -946,7 +947,7 @@ const AdminDashboard = () => {
                 onClick={async () => {
                   setRefundLoading(true);
                   try {
-                    await axios.patch(`http://localhost:8081/api/v1/bookings/${refundModal.id}/refund`, {
+                    await axios.patch(`${API_BASE}/api/v1/bookings/${refundModal.id}/refund`, {
                       cancellationResponse: refundResponse,
                       approved: refundModal.action === 'approve'
                     }, { headers: { Authorization: `Bearer ${token}` } });

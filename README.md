@@ -30,9 +30,10 @@ enterprise-final-assignment/
 │   ├── src/main/java/             # Application source (controller, service, repository, model, dto, security, config)
 │   ├── src/main/resources/
 │   │   ├── application.properties
-│   │   └── db/migration/          # 15 versioned Flyway migration scripts (V1 → V15)
+│   │   └── db/migration/          # 16 versioned Flyway migration scripts (V1 → V16)
 │   ├── src/test/java/             # JUnit 5 + Mockito test suites (BookingServiceTest, PitchServiceTest, PitchControllerTest)
-│   ├── docker-compose.yml         # PostgreSQL 15 container definition
+│   ├── Dockerfile                 # Spring Boot container (eclipse-temurin:21-jdk-alpine)
+│   ├── docker-compose.yml         # Full stack: PostgreSQL 15 + Spring Boot API + React frontend
 │   └── pom.xml                    # Maven build descriptor (Spring Boot 3.2.5, JaCoCo, JJWT 0.12.6, springdoc 2.5.0)
 │
 └── PitchPerfect/pitch-perfect-ui/ # React 19 + Vite 8 + Tailwind CSS 3 frontend
@@ -40,8 +41,10 @@ enterprise-final-assignment/
     │   ├── pages/                 # Home, Auth, Dashboard, ManagerDashboard, AdminDashboard, MyBookings, Profile
     │   ├── components/            # Navbar, ConfirmModal, ImageCropper
     │   ├── context/               # AuthContext (JWT state, role-aware routing)
+    │   ├── config.js              # Central API base URL (reads VITE_API_URL env var)
     │   ├── api/                   # Axios client configuration
     │   └── services/              # Service modules per domain
+    ├── Dockerfile                 # Multi-stage: Node/Vite build → Nginx serve (no Node at runtime)
     ├── package.json               # React 19, React Router 7, Axios, Lucide React, Tailwind CSS
     └── vite.config.js
 ```
@@ -71,7 +74,7 @@ In strict compliance with the SE4801 project guidelines, the system implements f
 
 4. **Quality Assurance** — JUnit 5 test suites covering `BookingService`, `PitchService`, and `PitchController`. Mockito is used for service-layer isolation. JaCoCo is configured as a Maven plugin to enforce the mandatory 70% line coverage threshold. Reports are produced at `target/site/jacoco/index.html` on every `mvn test` run.
 
-5. **Deployment Infrastructure** — A `docker-compose.yml` defines the PostgreSQL 15 service (`pitch_perfect_db`). The Spring Boot application connects to it via environment-injected datasource properties, making the full stack runnable with a single command.
+5. **Deployment Infrastructure** — A `docker-compose.yml` orchestrates three containers: `pitch_perfect_db` (PostgreSQL 15), `pitch_perfect_api` (Spring Boot on port 8081), and `pitch_perfect_ui` (React served by Nginx on port 3000). The entire full stack — database, backend, and frontend — can be launched with a single command. The React frontend is packaged into a lightweight Nginx container using a multi-stage Docker build; no Node.js installation is required to run the UI.
 
 ---
 
@@ -162,7 +165,66 @@ The request pipeline passes through `JwtAuthFilter`, which decodes and validates
 
 ---
 
-## Local Development Setup
+## 🐳 Docker — Full Stack Setup (Recommended)
+
+The easiest way to run the entire application. No need to install Java, Node.js, or Vite — Docker handles everything.
+
+### Prerequisites
+
+- [Docker Engine](https://docs.docker.com/get-docker/) with Docker Compose
+- [Apache Maven 3.9+](https://maven.apache.org/) (only needed to build the JAR once)
+
+### Step 1 — Build the Backend JAR
+
+```bash
+cd PitchPerfect
+mvn clean package -DskipTests
+```
+
+This compiles the Spring Boot application and produces `target/PitchPerfect-*.jar`.
+
+### Step 2 — Start All Services
+
+```bash
+docker compose up --build
+```
+
+Docker will automatically:
+1. Start **PostgreSQL 15** (`pitch_perfect_db`) on port `5432`
+2. Start the **Spring Boot API** (`pitch_perfect_api`) on port `8081` — Flyway migrations run on startup
+3. Build and start the **React frontend** (`pitch_perfect_ui`) using a multi-stage Nginx image on port `3000`
+
+### Access Points
+
+| Service | URL |
+|:--------|:----|
+| **Frontend** (React/Nginx) | `http://localhost:3000` |
+| **Backend API** (Spring Boot) | `http://localhost:8081` |
+| **API Docs** (Swagger UI) | `http://localhost:8081/swagger-ui.html` |
+| **Database** (PostgreSQL) | `localhost:5432` |
+
+### Stop All Services
+
+```bash
+docker compose down
+```
+
+### Rebuild After Code Changes
+
+```bash
+# If you changed backend Java code:
+mvn clean package -DskipTests
+docker compose up --build app
+
+# If you changed frontend React code:
+docker compose up --build frontend
+```
+
+> **Note on `VITE_API_URL`**: The frontend is built with `VITE_API_URL=http://localhost:8081` baked in at Docker build time. If you deploy to a remote server, update the `args.VITE_API_URL` value in `docker-compose.yml` to point to your server's public IP or domain before running `docker compose up --build frontend`.
+
+---
+
+## Local Development Setup (Without Docker)
 
 ### Prerequisites
 
@@ -274,6 +336,7 @@ All schema changes are tracked as versioned Flyway scripts. No manual DDL is eve
 | V13 | `created_by` audit column on pitches |
 | V14 | Unique constraint on username |
 | V15 | Cancellation refund tracking fields |
+| V16 | Widen `image_url` column from `VARCHAR(255)` to `TEXT` to support base64-encoded uploaded images |
 
 ---
 

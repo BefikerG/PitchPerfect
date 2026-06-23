@@ -1,3 +1,4 @@
+import API_BASE from '../config';
 import { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -27,7 +28,7 @@ const Profile = () => {
       setLastName(user.lastName || '');
       setUsername(user.username || '');
       if (user.profileImageUrl && user.profileImageUrl.startsWith('/uploads/')) {
-        setProfileImageUrl(`http://localhost:8081${user.profileImageUrl}`);
+        setProfileImageUrl(`'${API_BASE}'${user.profileImageUrl}`);
       } else {
         setProfileImageUrl(user.profileImageUrl || '');
       }
@@ -43,7 +44,7 @@ const Profile = () => {
     setUsernameStatus('checking');
     const timer = setTimeout(async () => {
       try {
-        const res = await axios.get(`http://localhost:8081/api/v1/auth/check-username?username=${username}`);
+        const res = await axios.get(`${API_BASE}/api/v1/auth/check-username?username=${username}`);
         setUsernameStatus(res.data.available ? 'available' : 'taken');
       } catch (err) {
         setUsernameStatus(null);
@@ -89,7 +90,7 @@ const Profile = () => {
         formData.append('file', selectedFile);
         
         const imageResponse = await axios.post(
-          'http://localhost:8081/api/v1/users/profile/image',
+          `${API_BASE}/api/v1/users/profile/image',
           formData,
           { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
         );
@@ -98,7 +99,7 @@ const Profile = () => {
 
       // 2. Update the rest of the profile
       const response = await axios.put(
-        'http://localhost:8081/api/v1/users/profile',
+        `${API_BASE}/api/v1/users/profile',
         { firstName, lastName, username },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -1,3 +1,4 @@
+import API_BASE from '../config';
 import { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -257,7 +258,7 @@ const MyBookings = () => {
   const fetchBookings = useCallback(() => {
     if (!token) { navigate('/auth'); return; }
     setLoading(true);
-    axios.get('http://localhost:8081/api/v1/bookings/my?size=50')
+    axios.get(`${API_BASE}/api/v1/bookings/my?size=50')
       .then(res => setBookings(res.data.content || []))
       .catch(err => console.error('Failed to load bookings', err))
       .finally(() => setLoading(false));
@@ -270,7 +271,7 @@ const MyBookings = () => {
     setCancelLoading(true);
     try {
       const payload = reason ? { cancellationReason: reason } : {};
-      const res = await axios.patch(`http://localhost:8081/api/v1/bookings/${cancelTarget.id}/cancel`, payload, {
+      const res = await axios.patch(`${API_BASE}/api/v1/bookings/${cancelTarget.id}/cancel`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRefundResult(res.data);

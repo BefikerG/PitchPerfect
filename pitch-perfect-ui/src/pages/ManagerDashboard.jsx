@@ -1,3 +1,4 @@
+import API_BASE from '../config';
 import { useState, useContext, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
@@ -276,7 +277,7 @@ const ManagerDashboard = () => {
 
   const fetchManagers = async () => {
     try {
-      const res = await axios.get('http://localhost:8081/api/v1/admin/managers', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${API_BASE}/api/v1/admin/managers', { headers: { Authorization: `Bearer ${token}` } });
       setManagers(res.data || []);
     } catch (err) {
       console.error('Failed to load managers', err);
@@ -286,7 +287,7 @@ const ManagerDashboard = () => {
   const fetchManagedPitches = async () => {
     setLoadingPitches(true);
     try {
-      const res = await axios.get('http://localhost:8081/api/v1/pitches?size=100', { headers: { Authorization: `Bearer ${token}` }});
+      const res = await axios.get(`${API_BASE}/api/v1/pitches?size=100', { headers: { Authorization: `Bearer ${token}` }});
       setPitches(res.data.content || []);
     } catch (err) {
       console.error('Failed to load pitches', err);
@@ -298,7 +299,7 @@ const ManagerDashboard = () => {
   const fetchManagedBookings = async () => {
     setLoadingBookings(true);
     try {
-      const res = await axios.get('http://localhost:8081/api/v1/bookings/managed?size=100', { headers: { Authorization: `Bearer ${token}` }});
+      const res = await axios.get(`${API_BASE}/api/v1/bookings/managed?size=100', { headers: { Authorization: `Bearer ${token}` }});
       setBookings(res.data.content || []);
     } catch (err) {
       console.error('Failed to load bookings', err);
@@ -310,7 +311,7 @@ const ManagerDashboard = () => {
   const handleRefundRespond = async (bookingId, approved) => {
     setRefundLoading(true);
     try {
-      await axios.patch(`http://localhost:8081/api/v1/bookings/${bookingId}/refund`, {
+      await axios.patch(`${API_BASE}/api/v1/bookings/${bookingId}/refund`, {
         cancellationResponse: refundResponse,
         approved
       }, { headers: { Authorization: `Bearer ${token}` } });
@@ -336,7 +337,7 @@ const ManagerDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.put(`http://localhost:8081/api/v1/pitches/${pitch.id}/availability`, {}, { headers: { Authorization: `Bearer ${token}` } });
+          await axios.put(`${API_BASE}/api/v1/pitches/${pitch.id}/availability`, {}, { headers: { Authorization: `Bearer ${token}` } });
           showToast(`"${pitch.name}" ${pitch.isAvailable ? 'unlisted' : 're-listed'} successfully.`, 'success');
           fetchManagedPitches();
         } catch { showToast('Failed to update availability.', 'danger'); }
@@ -348,7 +349,7 @@ const ManagerDashboard = () => {
   const saveEditPitch = async (updatedData) => {
     setIsEditLoading(true);
     try {
-      await axios.put(`http://localhost:8081/api/v1/pitches/${editingPitch.id}`, updatedData, {
+      await axios.put(`${API_BASE}/api/v1/pitches/${editingPitch.id}`, updatedData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       showToast('Pitch updated successfully.', 'success');
@@ -370,7 +371,7 @@ const ManagerDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.delete(`http://localhost:8081/api/v1/pitches/${pitch.id}`, { headers: { Authorization: `Bearer ${token}` } });
+          await axios.delete(`${API_BASE}/api/v1/pitches/${pitch.id}`, { headers: { Authorization: `Bearer ${token}` } });
           showToast(`"${pitch.name}" deleted.`, 'success');
           fetchManagedPitches();
         } catch (err) {
@@ -390,7 +391,7 @@ const ManagerDashboard = () => {
       onConfirm: async () => {
         setIsActionLoading(true);
         try {
-          await axios.put(`http://localhost:8081/api/v1/pitches/${pitch.id}/price`, { price: newPrice }, { headers: { Authorization: `Bearer ${token}` } });
+          await axios.put(`${API_BASE}/api/v1/pitches/${pitch.id}/price`, { price: newPrice }, { headers: { Authorization: `Bearer ${token}` } });
           showToast('Price updated successfully.', 'success');
           fetchManagedPitches();
         } catch { showToast('Failed to update price.', 'danger'); }
@@ -425,7 +426,7 @@ const ManagerDashboard = () => {
     const imageUrls = images.map(img => img.value).filter(v => v && v.trim() !== '');
 
     try {
-      await axios.post('http://localhost:8081/api/v1/pitches', {
+      await axios.post(`${API_BASE}/api/v1/pitches', {
         name,
         location,
         pricePerHour: parseFloat(pricePerHour),

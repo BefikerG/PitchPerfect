@@ -1,5 +1,32 @@
-version: "3.8"
+version: '3.8'
 services:
+  app:
+    build: .
+    container_name: pitch_perfect_api
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/pitch_perfect
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - JWT_SECRET=ThisIsAVeryLongSecretKeyThatNeedsToBeAtLeast256BitsLongForJwts
+      - JWT_EXPIRATION=86400000
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./pitch-perfect-ui
+      args:
+        - VITE_API_URL=http://localhost:8081
+    container_name: pitch_perfect_ui
+    ports:
+      - "3000:80"
+    depends_on:
+      - app
+    restart: unless-stopped
+
   db:
     image: postgres:15
     container_name: pitch_perfect_db
@@ -10,3 +37,4 @@ services:
     ports:
       - "5432:5432"
     restart: unless-stopped
+

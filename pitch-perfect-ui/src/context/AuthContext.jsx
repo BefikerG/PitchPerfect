@@ -1,3 +1,4 @@
+import API_BASE from '../config';
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get('http://localhost:8081/api/v1/auth/me');
+      const res = await axios.get(`${API_BASE}/api/v1/auth/me');
       setUser(res.data);
     } catch (err) {
       console.error("Failed to fetch user", err);
