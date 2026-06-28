@@ -258,7 +258,7 @@ const MyBookings = () => {
   const fetchBookings = useCallback(() => {
     if (!token) { navigate('/auth'); return; }
     setLoading(true);
-    axios.get(`${API_BASE}/api/v1/bookings/my?size=50')
+    axios.get(`${API_BASE}/api/v1/bookings/my?size=50`)
       .then(res => setBookings(res.data.content || []))
       .catch(err => console.error('Failed to load bookings', err))
       .finally(() => setLoading(false));

@@ -43,11 +43,11 @@ const Auth = () => {
     setError('');
     try {
       if (isLogin) {
-        const res = await axios.post(`${API_BASE}/api/v1/auth/login', { email, password });
+        const res = await axios.post(`${API_BASE}/api/v1/auth/login`, { email, password });
         login(res.data.token, rememberMe);
         navigate('/dashboard');
       } else {
-        const res = await axios.post(`${API_BASE}/api/v1/auth/register', { 
+        const res = await axios.post(`${API_BASE}/api/v1/auth/register`, { 
           firstName, lastName, username, email, password 
         });
         login(res.data.token, rememberMe);

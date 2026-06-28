@@ -110,11 +110,11 @@ const AdminDashboard = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
       const [statsRes, usersRes, pitchesRes, managersRes, bookingsRes] = await Promise.all([
-        axios.get(`${API_BASE}/api/v1/admin/stats', config),
-        axios.get(`${API_BASE}/api/v1/admin/users?size=100', config),
-        axios.get(`${API_BASE}/api/v1/pitches?size=100', config),
-        axios.get(`${API_BASE}/api/v1/admin/managers', config).catch(() => ({ data: [] })),
-        axios.get(`${API_BASE}/api/v1/bookings?size=100', config).catch(() => ({ data: { content: [] } }))
+        axios.get(`${API_BASE}/api/v1/admin/stats`, config),
+        axios.get(`${API_BASE}/api/v1/admin/users?size=100`, config),
+        axios.get(`${API_BASE}/api/v1/pitches?size=100`, config),
+        axios.get(`${API_BASE}/api/v1/admin/managers`, config).catch(() => ({ data: [] })),
+        axios.get(`${API_BASE}/api/v1/bookings?size=100`, config).catch(() => ({ data: { content: [] } }))
       ]);
       setStats(statsRes.data);
       setUsers(usersRes.data.content || []);
@@ -502,7 +502,7 @@ const AdminDashboard = () => {
                         <td style={{ padding: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                           {u.profileImageUrl ? (
                             <img 
-                              src={u.profileImageUrl.startsWith('/uploads/') ? `'${API_BASE}'${u.profileImageUrl}` : u.profileImageUrl} 
+                              src={u.profileImageUrl.startsWith('/uploads/') ? `${API_BASE}${u.profileImageUrl}` : u.profileImageUrl} 
                               alt="" 
                               style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.2)' }} 
                             />

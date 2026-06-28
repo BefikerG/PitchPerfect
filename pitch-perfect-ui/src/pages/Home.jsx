@@ -218,7 +218,7 @@ const Home = () => {
               animation: 'fadeInUp 0.6s ease both',
             }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-primary)', display: 'inline-block', animation: 'pulseGlow 1.5s ease infinite' }} />
-              Pitches available now — book instantly
+              Pitches available now - book instantly
             </div>
 
             <h1 style={{
@@ -247,7 +247,7 @@ const Home = () => {
               animation: 'fadeInUp 0.7s 0.2s ease both',
             }}>
               The fastest way to book premium football and futsal pitches in your city.
-              Real-time availability, instant confirmation — no hassle, just play.
+              Real-time availability, instant confirmation - no hassle, just play.
             </p>
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', animation: 'fadeInUp 0.7s 0.3s ease both' }}>
@@ -334,7 +334,7 @@ const Home = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '2rem' }}>
             {[
               { num: '01', icon: '🔍', title: 'Search', desc: 'Browse pitches by location, price, and availability. Filters update in real time.' },
-              { num: '02', icon: '📅', title: 'Pick a Slot', desc: 'See live availability. Choose your date and time — no double bookings, ever.' },
+              { num: '02', icon: '📅', title: 'Pick a Slot', desc: 'See live availability. Choose your date and time - no double bookings, ever.' },
               { num: '03', icon: '⚡', title: 'Book Instantly', desc: 'Confirm your reservation in one tap. Get an immediate confirmation.' },
               { num: '04', icon: '⚽', title: 'Play', desc: 'Show up, kick off, and enjoy. Your pitch is guaranteed and waiting for you.' },
             ].map((step, i) => (
@@ -474,7 +474,7 @@ const Home = () => {
             fontSize: '1.15rem', padding: '1rem 3rem',
             boxShadow: '0 0 40px rgba(0,255,204,0.35), 0 12px 32px rgba(0,0,0,0.4)',
           }}>
-            {user ? 'Browse Pitches' : 'Get Started — It\'s Free'} <ArrowRight size={22} />
+            {user ? 'Browse Pitches' : 'Get Started - It\'s Free'} <ArrowRight size={22} />
           </Link>
         </div>
       </section>

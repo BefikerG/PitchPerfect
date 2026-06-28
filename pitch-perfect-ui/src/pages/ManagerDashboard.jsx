@@ -277,7 +277,7 @@ const ManagerDashboard = () => {
 
   const fetchManagers = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/v1/admin/managers', { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${API_BASE}/api/v1/admin/managers`, { headers: { Authorization: `Bearer ${token}` } });
       setManagers(res.data || []);
     } catch (err) {
       console.error('Failed to load managers', err);
@@ -287,7 +287,7 @@ const ManagerDashboard = () => {
   const fetchManagedPitches = async () => {
     setLoadingPitches(true);
     try {
-      const res = await axios.get(`${API_BASE}/api/v1/pitches?size=100', { headers: { Authorization: `Bearer ${token}` }});
+      const res = await axios.get(`${API_BASE}/api/v1/pitches?size=100`, { headers: { Authorization: `Bearer ${token}` }});
       setPitches(res.data.content || []);
     } catch (err) {
       console.error('Failed to load pitches', err);
@@ -299,7 +299,7 @@ const ManagerDashboard = () => {
   const fetchManagedBookings = async () => {
     setLoadingBookings(true);
     try {
-      const res = await axios.get(`${API_BASE}/api/v1/bookings/managed?size=100', { headers: { Authorization: `Bearer ${token}` }});
+      const res = await axios.get(`${API_BASE}/api/v1/bookings/managed?size=100`, { headers: { Authorization: `Bearer ${token}` }});
       setBookings(res.data.content || []);
     } catch (err) {
       console.error('Failed to load bookings', err);
@@ -426,7 +426,7 @@ const ManagerDashboard = () => {
     const imageUrls = images.map(img => img.value).filter(v => v && v.trim() !== '');
 
     try {
-      await axios.post(`${API_BASE}/api/v1/pitches', {
+      await axios.post(`${API_BASE}/api/v1/pitches`, {
         name,
         location,
         pricePerHour: parseFloat(pricePerHour),

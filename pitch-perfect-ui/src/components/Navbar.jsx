@@ -52,7 +52,7 @@ const Navbar = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginLeft: '1rem' }}>
               <Link to="/profile" style={{ textDecoration: 'none', color: 'var(--text-secondary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.4rem', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}>
                 {user.profileImageUrl ? (
-                  <img src={user.profileImageUrl.startsWith('/uploads/') ? `'${API_BASE}'${user.profileImageUrl}` : user.profileImageUrl} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
+                  <img src={user.profileImageUrl.startsWith('/uploads/') ? `${API_BASE}${user.profileImageUrl}` : user.profileImageUrl} alt="Profile" style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover' }} />
                 ) : (
                   <User size={16} />
                 )}

@@ -28,7 +28,7 @@ const Profile = () => {
       setLastName(user.lastName || '');
       setUsername(user.username || '');
       if (user.profileImageUrl && user.profileImageUrl.startsWith('/uploads/')) {
-        setProfileImageUrl(`'${API_BASE}'${user.profileImageUrl}`);
+        setProfileImageUrl(`${API_BASE}${user.profileImageUrl}`);
       } else {
         setProfileImageUrl(user.profileImageUrl || '');
       }
@@ -90,7 +90,7 @@ const Profile = () => {
         formData.append('file', selectedFile);
         
         const imageResponse = await axios.post(
-          `${API_BASE}/api/v1/users/profile/image',
+          `${API_BASE}/api/v1/users/profile/image`,
           formData,
           { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
         );
@@ -99,7 +99,7 @@ const Profile = () => {
 
       // 2. Update the rest of the profile
       const response = await axios.put(
-        `${API_BASE}/api/v1/users/profile',
+        `${API_BASE}/api/v1/users/profile`,
         { firstName, lastName, username },
         { headers: { Authorization: `Bearer ${token}` } }
       );
