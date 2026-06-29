@@ -1,14 +1,20 @@
-# 1. Get a lightweight version of Java 21
-FROM eclipse-temurin:21-jdk-alpine
-
-# 2. Create a folder inside the container called /app
+# Stage 1: Build the Maven application
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 
-# 3. Copy the compiled JAR file you just made into the container
-COPY target/*.jar app.jar
+# Copy the build definitions and source code
+COPY pom.xml .
+COPY src ./src
 
-# 4. Open port 8081 so your React app can talk to it
-EXPOSE 8081
+# Compile and package the application, skipping tests for speed
+RUN mvn clean package -DskipTests
 
-# 5. The command to start the application when the container turns on
+# Stage 2: Create the final lightweight runtime container
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+
+# Copy the compiled JAR directly from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
