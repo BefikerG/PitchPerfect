@@ -21,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 @CrossOrigin(origins = {"http://localhost:5173", "https://pitch-perfect-theta.vercel.app"})
 // IDE force refresh
 public class AuthController {
